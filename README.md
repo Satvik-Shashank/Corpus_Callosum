@@ -1,31 +1,107 @@
-# Corpus Callosum
+# AI-Assisted Early Characterization of Corpus Callosum Development
 
-AI-assisted research prototype for early characterization of corpus callosum (CC) development from infant brain MRI. It supports image preparation, mid-sagittal candidate selection, future validated CC segmentation, morphology, and age-aware research analysis.
+<p align="center">
+  <strong>Quantifying Corpus Callosum Morphology from Infant Brain MRI for Early Neurodevelopmental Assessment</strong>
+</p>
 
-## Scientific scope
+<p align="center">
+  <img src="https://img.shields.io/badge/Domain-Medical%20AI-blue" />
+  <img src="https://img.shields.io/badge/Deep%20Learning-U--Net-orange" />
+  <img src="https://img.shields.io/badge/Imaging-Infant%20MRI-purple" />
+  <img src="https://img.shields.io/badge/Framework-PyTorch-red" />
+  <img src="https://img.shields.io/badge/Backend-FastAPI-green" />
+  <img src="https://img.shields.io/badge/Frontend-Next.js-black" />
+  <img src="https://img.shields.io/badge/Status-Research%20Prototype-yellow" />
+</p>
 
-This repository is not a diagnostic system. MRI alone does not diagnose autism or any developmental disorder. Outputs require expert quality control and are intended only for research/decision-support workflows. Automatically generated masks, including the archived K-means tissue labels and threshold masks, are not ground truth.
+---
 
-## Layout
+## Overview
 
-- `src/`: data, preprocessing, sagittal, localization, segmentation, morphology, developmental and inference interfaces.
-- `models/`: reusable U-Net architecture only; no checkpoint is supplied.
-- `training/`: guarded future training components that require expert-validated CC labels.
-- `evaluation/`: metrics and QC visualization.
-- `experiments/archive/`: preserved historical scripts, not production code.
+Early brain development is a highly dynamic process, and structural abnormalities in infancy may provide important clues for earlier clinical evaluation and monitoring.
 
-MRI datasets and model artifacts are excluded from Git. Use `configs/default.yaml` as an explicit research-only starting point.
+The **corpus callosum (CC)** is a major white-matter structure connecting the cerebral hemispheres. Its size, shape, thickness, and regional morphology change throughout early development.
 
-## Requirements for legitimate CC model training
+This project aims to develop an **AI-assisted neuroimaging system** capable of automatically identifying, segmenting, and quantitatively characterizing the corpus callosum from infant brain MRI.
 
-Paired MRI and expert/manual (or independently validated) binary CC masks on the selected mid-sagittal plane; participant-level train/validation/test splits; provenance and QC records; and held-out evaluation against the validated labels are required before enabling training.
+The system combines:
 
-## Status
+**3D Infant MRI → Preprocessing → Mid-Sagittal Localization → CC Segmentation → Morphological Analysis → Age-Matched Reference Analysis → Explainable Report**
 
-The architecture and safety boundaries are implemented. Training, clinical claims, and automatic-label promotion are intentionally disabled.
+The objective is not to replace clinical diagnosis.
 
-## Checkpoint 1: processing and annotation QC
+Instead, the system is designed to provide **objective quantitative measurements that may support earlier clinical evaluation, monitoring, and research into neurodevelopmental abnormalities.**
 
-Run exactly one image with `python scripts/process_one_mri.py PATH_TO_IMAGE --subject-id SUBJECT_ID`. The command writes a geometry-preserving processed NIfTI, the native-resolution selected mid-sagittal plane metadata, and three display-only QC images. It does not resize the analytical volume.
+---
 
-Candidate CC masks may be made only through an explicit spatial/intensity-prior protocol and are stored in `outputs/candidates/`. They are not labels. Human review records and genuinely corrected masks belong in `outputs/validated_masks/`; only masks with verified provenance and manual validation may later be considered for a training manifest. Use `src.labels.inspect_label_source` with an authoritative label lookup before accepting any `dseg.nii.gz` semantics.
+# Problem Statement
+
+Current assessment of early neurodevelopmental abnormalities often depends on clinical examination, developmental milestones, and expert interpretation of neuroimaging.
+
+Although infant MRI contains valuable structural information, extracting quantitative anatomical measurements from MRI can be:
+
+- time-consuming
+- operator-dependent
+- difficult to standardize
+- challenging to scale across large datasets
+
+In particular, the corpus callosum is an anatomically important structure whose morphology can potentially provide measurable information about early brain development.
+
+### Our problem
+
+> **Develop an AI-assisted system that automatically extracts and analyzes the corpus callosum from infant brain MRI, quantifies its structural morphology, and compares those measurements against age-matched developmental reference patterns to support earlier clinical evaluation and longitudinal monitoring.**
+
+---
+
+# Core Idea
+
+Instead of attempting to diagnose a neurological condition directly, this project focuses on a much more specific and measurable problem:
+
+```text
+                 INFANT BRAIN MRI
+                         │
+                         ▼
+              ┌─────────────────────┐
+              │     PREPROCESSING    │
+              │                     │
+              │ Orientation         │
+              │ Normalization       │
+              │ Brain extraction    │
+              └──────────┬──────────┘
+                         │
+                         ▼
+              ┌─────────────────────┐
+              │ MID-SAGITTAL        │
+              │ LOCALIZATION        │
+              └──────────┬──────────┘
+                         │
+                         ▼
+              ┌─────────────────────┐
+              │ CC SEGMENTATION     │
+              │                     │
+              │       U-Net         │
+              └──────────┬──────────┘
+                         │
+                         ▼
+              ┌─────────────────────┐
+              │ MORPHOLOGY          │
+              │                     │
+              │ Area                │
+              │ Length              │
+              │ Thickness           │
+              │ Regional structure  │
+              └──────────┬──────────┘
+                         │
+                         ▼
+              ┌─────────────────────┐
+              │ AGE-AWARE ANALYSIS  │
+              │                     │
+              │ Expected morphology │
+              │ Deviation           │
+              │ Reference range     │
+              └──────────┬──────────┘
+                         │
+                         ▼
+              ┌─────────────────────┐
+              │ EXPLAINABLE REPORT  │
+              └─────────────────────┘
