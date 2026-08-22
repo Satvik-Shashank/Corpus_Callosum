@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.nii
+*.nii.gz
+*.pt
+*.pth
+*.ckpt
+outputs/*
+!outputs/.gitkeep
+data/
+*.ipynb_checkpoints

@@ -1,0 +1,19 @@
+project: Corpus Callosum
+task: binary_mid_sagittal_cc_segmentation
+research_only: true
+preprocessing:
+  canonical_orientation: RAS
+  target_spacing_mm: null
+  display_enhancement_for_measurement: false
+  apply_n4_bias_correction: false
+  brain_mask_percentile: 20.0
+  normalization: zscore
+  sagittal_search_radius: 5
+annotation:
+  candidate_masks_directory: outputs/candidates
+  validated_masks_directory: outputs/validated_masks
+  candidate_masks_are_ground_truth: false
+  require_verified_label_lookup_for_existing_dseg: true
+training:
+  enabled: false
+  required_label_source: expert_validated_manual_cc_masks

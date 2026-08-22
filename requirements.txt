@@ -1,0 +1,7 @@
+numpy>=1.26
+nibabel>=5.2
+SimpleITK>=2.3
+torch>=2.2
+PyYAML>=6.0
+pytest>=8.0
+matplotlib>=3.8
